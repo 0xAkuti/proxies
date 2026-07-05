@@ -5,6 +5,7 @@ import {
   EIP1967_BEACON_SLOT,
   EIP1967_IMPL_SLOT,
   IMPLEMENTATION_SELECTOR,
+  ZEPPELINOS_IMPL_SLOT,
 } from '../src'
 import {
   encodeAddress,
@@ -130,6 +131,31 @@ describe('detectProxy', () => {
     expect(result?.pattern).toBe('eip-1967-beacon')
     expect(result?.beacon).toBe(BEACON)
     expect(result?.targets[0].address).toBe(IMPL)
+  })
+
+  it('falls back to zeppelinos when EIP-1967 slots are empty but the legacy slot is set', async () => {
+    const fetchFn = createMockFetch([
+      {
+        match: (_, body) => getCalldata(body).startsWith('0x01ffc9a7'),
+        response: { status: 200, body: rpcEnvelope(encodeBool(false)) },
+      },
+      // ZeppelinOS impl slot → set; every other storage read → zero
+      {
+        match: (_, body) =>
+          getMethod(body) === 'eth_getStorageAt'
+          && getStorageSlot(body) === ZEPPELINOS_IMPL_SLOT,
+        response: { status: 200, body: rpcEnvelope(encodeAddress(IMPL)) },
+      },
+      {
+        match: (_, body) => getMethod(body) === 'eth_getStorageAt',
+        response: { status: 200, body: rpcEnvelope(encodeAddress('0x' + '00'.repeat(20))) },
+      },
+    ])
+    const result = await detectProxy(RPC, ADDR, fetchFn)
+    expect(result).toEqual({
+      pattern: 'zeppelinos',
+      targets: [{ address: IMPL }],
+    })
   })
 
   it('falls back to 1167 when no storage slot matches', async () => {

@@ -6,6 +6,7 @@ export type ProxyPattern =
   | 'eip-1967'
   | 'eip-1967-beacon'
   | 'eip-1822'
+  | 'zeppelinos'
   | 'eip-1167'
   | 'gnosis-safe'
   | 'eip-897'
@@ -55,7 +56,7 @@ export interface RawProxy {
   targets: ResolvedTarget[]
   /** EIP-1967 beacon address (only set for `eip-1967-beacon`). */
   beacon?: string
-  /** EIP-1967 admin address (only set for `eip-1967` when the admin slot is non-zero). */
+  /** Proxy admin address (set for `eip-1967` / `zeppelinos` when the admin slot is non-zero). */
   admin?: string
 }
 
