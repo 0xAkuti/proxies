@@ -1,6 +1,6 @@
 # @1001-digital/proxies
 
-Ethereum proxy pattern detection primitives for TypeScript — ERC-2535 diamonds, EIP-1967, EIP-1167, beacon, Safe, EIP-1822, EIP-897.
+Ethereum proxy pattern detection primitives for TypeScript — ERC-2535 diamonds, EIP-1967, EIP-1167, beacon, Safe, EIP-1822, legacy ZeppelinOS, EIP-897.
 
 Given a contract address, resolve where the real code lives: one implementation (plain proxy) or N facets (diamond). Uniform detect → enrich → compose pipeline across all patterns.
 
@@ -163,11 +163,12 @@ Creates a proxies client.
 
 ### Detection
 
-- **`detectProxy(rpc, address, fetchFn)`** — tries all patterns in priority order (`diamond → 1967 → 1967-beacon → 1822 → 1167 → safe → 897`), returns the first match.
+- **`detectProxy(rpc, address, fetchFn)`** — tries all patterns in priority order (`diamond → 1967 → 1967-beacon → 1822 → zeppelinos → 1167 → safe → 897`), returns the first match.
 - **`detectDiamond`** — ERC-165 probe, then `facets()` fallback.
 - **`detectEip1967`** — reads impl slot `0x3608…3bc3`; optionally admin slot.
 - **`detectEip1967Beacon`** — reads beacon slot `0xa3f0…750d`, then `implementation()` on the beacon.
 - **`detectEip1822`** — reads PROXIABLE slot `0xc5f1…f8e2`.
+- **`detectZeppelinOs`** — reads legacy ZeppelinOS slot `keccak256('org.zeppelinos.proxy.implementation')` (`0x7050…f8c3`); optionally admin slot. Pre-EIP-1967 upgradeable proxies — most prominently USDC's `FiatTokenProxy`.
 - **`detectEip1167`** — `eth_getCode`, matches minimal proxy bytecode (`363d3d…bf3`).
 - **`detectGnosisSafe`** — reads storage slot 0.
 - **`detectEip897`** — calls `implementation()` as a last resort.
@@ -204,6 +205,8 @@ EIP1967_IMPL_SLOT
 EIP1967_BEACON_SLOT
 EIP1967_ADMIN_SLOT
 EIP1822_PROXIABLE_SLOT
+ZEPPELINOS_IMPL_SLOT
+ZEPPELINOS_ADMIN_SLOT
 EIP1167_BYTECODE_PREFIX
 EIP1167_BYTECODE_SUFFIX
 ZERO_ADDRESS
@@ -229,6 +232,7 @@ type ProxyPattern =
   | 'eip-1967'
   | 'eip-1967-beacon'
   | 'eip-1822'
+  | 'zeppelinos'
   | 'eip-1167'
   | 'gnosis-safe'
   | 'eip-897'
@@ -252,7 +256,7 @@ type ProxyPattern =
   pattern: ProxyPattern
   targets: ResolvedTarget[]   // 1 entry except for diamonds
   beacon?: string             // only for eip-1967-beacon
-  admin?: string              // only for eip-1967 when admin slot is set
+  admin?: string              // for eip-1967 / zeppelinos when admin slot is set
 }
 ```
 

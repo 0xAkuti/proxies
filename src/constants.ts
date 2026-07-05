@@ -29,6 +29,15 @@ export const EIP1967_ADMIN_SLOT = '0xb53127684a568b3173ae13b9f8a6016e243e63b6e8e
 /** EIP-1822 UUPS PROXIABLE slot: `keccak256('PROXIABLE')`. */
 export const EIP1822_PROXIABLE_SLOT = '0xc5f16f0fcc7e328891200cdca4c1c57b2b360c12265401510d42209b5829f8e2'
 
+// ── ZeppelinOS (legacy, pre-EIP-1967) storage slots ──
+// Plain keccak256 of the label — no `- 1` decrement, unlike EIP-1967.
+
+/** ZeppelinOS implementation slot: `keccak256('org.zeppelinos.proxy.implementation')`. */
+export const ZEPPELINOS_IMPL_SLOT = '0x7050c9e0f4ca769c69bd3a8ef740bc37934f8e2c036e5a723fd8ee048ed3f8c3'
+
+/** ZeppelinOS admin slot: `keccak256('org.zeppelinos.proxy.admin')`. */
+export const ZEPPELINOS_ADMIN_SLOT = '0x10d6a54a4754c8869d6886b5f5d7fbfa5b4522237ea5c60d11bc4e7a1ff9390b'
+
 // ── EIP-1167 minimal-proxy bytecode markers ──
 // Reference: https://eips.ethereum.org/EIPS/eip-1167
 // Runtime: 0x363d3d373d3d3d363d73<20-byte impl>5af43d82803e903d91602b57fd5bf3 (45 bytes = 90 hex chars)

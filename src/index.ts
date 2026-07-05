@@ -64,6 +64,7 @@ export { detectDiamond } from './patterns/diamond'
 export { detectEip1967 } from './patterns/eip1967'
 export { detectEip1967Beacon } from './patterns/eip1967-beacon'
 export { detectEip1822 } from './patterns/eip1822'
+export { detectZeppelinOs } from './patterns/zeppelinos'
 export { detectEip1167 } from './patterns/eip1167'
 export { detectGnosisSafe } from './patterns/safe'
 export { detectEip897 } from './patterns/eip897'
@@ -93,6 +94,8 @@ export {
   EIP1967_BEACON_SLOT,
   EIP1967_ADMIN_SLOT,
   EIP1822_PROXIABLE_SLOT,
+  ZEPPELINOS_IMPL_SLOT,
+  ZEPPELINOS_ADMIN_SLOT,
   EIP1167_BYTECODE_PREFIX,
   EIP1167_BYTECODE_SUFFIX,
   ZERO_ADDRESS,

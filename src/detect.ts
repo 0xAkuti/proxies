@@ -5,6 +5,7 @@ import { detectEip1967 } from './patterns/eip1967'
 import { detectEip1967Beacon } from './patterns/eip1967-beacon'
 import { detectEip897 } from './patterns/eip897'
 import { detectGnosisSafe } from './patterns/safe'
+import { detectZeppelinOs } from './patterns/zeppelinos'
 import type { RawProxy } from './types'
 
 type Detector = (
@@ -24,6 +25,7 @@ const DETECTORS: Detector[] = [
   detectEip1967,
   detectEip1967Beacon,
   detectEip1822,
+  detectZeppelinOs,
   detectEip1167,
   detectGnosisSafe,
   detectEip897,
@@ -33,8 +35,8 @@ const DETECTORS: Detector[] = [
  * Detect any supported proxy pattern at `address`.
  *
  * Tries the built-in detectors in priority order (`eip-2535-diamond → eip-1967
- * → eip-1967-beacon → eip-1822 → eip-1167 → gnosis-safe → eip-897`). Returns
- * the first match, or `null` when no pattern matches.
+ * → eip-1967-beacon → eip-1822 → zeppelinos → eip-1167 → gnosis-safe →
+ * eip-897`). Returns the first match, or `null` when no pattern matches.
  *
  * Each detector runs with error isolation — an RPC failure in one pattern does
  * not poison the probe for subsequent ones.
